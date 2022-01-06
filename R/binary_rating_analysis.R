@@ -2,11 +2,11 @@
 library(here)
 
 source(here("R", "load_prep_data.R"))
-#loads objects: "valid_projects" "zoo_data"
+#loads objects: "valid_projects_details" "zoo_data"
 
 #********************************************
 #Create the BINARY ratings matrix
-user_ids_vec <- zoo_data %>% pull(user_id)
+#user_ids_vec <- zoo_data %>% pull(user_id)
 
 zoo_wide <- zoo_data %>%
   pivot_wider(id_cols = user_id,
@@ -17,12 +17,17 @@ zoo_wide <- zoo_data %>%
   #we make the user_id col into rownames
   column_to_rownames("user_id")
 
+# Need to save the wide version for use in web-app as
+# = only point where user ids and prefs exist together
+saveRDS(zoo_wide, here("input_data", "user_project_matrix.rds"))
+
+#Convert to recommenderlab binary matrix
 zoo_ratings <- as.matrix(zoo_wide)
 real_ratings <- as(zoo_ratings, "realRatingMatrix")
 binary_ratings <- binarize(real_ratings, minRating = 1)
 binary_ratings
 
-image(binary_ratings[1:50, 1:50])
+#image(binary_ratings[1:50, 1:50])
 
 #********************************************
 #Look for and remove Outliers
@@ -39,17 +44,18 @@ binary_ratings_filtered <- binary_ratings[, colCounts(binary_ratings) >= 5 ]
 binary_ratings_filtered
 
 #Now we have some users with no projects
-sum(rowCounts(binary_ratings_filtered) == 0)
-
+#sum(rowCounts(binary_ratings_filtered) == 0)
 #So only keep users that have classified on at least 5 projects
 binary_ratings_filtered <- binary_ratings_filtered[rowCounts(binary_ratings_filtered) >= 5, ]
 binary_ratings_filtered
 
-#distributions of the number of users per project:
 #projects_per_users <- rowCounts(binary_ratings_filtered)
 #range(projects_per_users)
 #qplot(projects_per_users) +  stat_bin(binwidth = 1)
 #qplot(projects_per_users[projects_per_users < 20 ]) + stat_bin(binwidth = 1)
+
+#Save the filtered preference matrix to use in the web app
+saveRDS(binary_ratings_filtered, file = here("input_data", "binary_preference_matrix.rds"))
 
 
 #********************************************
