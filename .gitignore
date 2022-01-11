@@ -76,3 +76,4 @@ docs/*
 #Ignore all .rds data files
 *.rds
 zoo_recommender/*.rds
+.Rproj.user
