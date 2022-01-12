@@ -1,0 +1,11 @@
+version: '3'
+services:
+  recommender-api:
+    image: recommender-api:local
+    build:
+      context: .
+    volumes:
+      - ./R:/app/R
+      - ./input_data:/app/input_data
+    ports:
+      - "8000:8000"
