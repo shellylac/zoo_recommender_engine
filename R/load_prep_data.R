@@ -16,10 +16,11 @@ library(recommenderlab)
 # Load Datasets
 user_counts <- fread(here("input_data", "2021_user_classification_counts.csv"))
 user_firstlast <- fread(here("input_data", "2021_user_first_last_classification.csv"))
-valid_projects <- fread(here("input_data", "launch_approved_projects_20-Dec-2021.csv"),
-  header = F,
-  col.names = c("project_id", "slug")
-)
+
+
+projects <- fread(here("input_data", "launch_approved_projects_20-Dec-2021.txt"),
+                        sep = NULL)
+colnames(projects) <- "project_details"
 
 # Clean up the valid projects dataset
 # rexp matches the word at the start of the string, an optional space, then the rest of the string.
@@ -27,13 +28,13 @@ valid_projects <- fread(here("input_data", "launch_approved_projects_20-Dec-2021
 # The parenthesis are subexpressions accessed as backreferences \\1 and \\2.
 # rexp <- "^(.*?)\\s(.*)$"
 
-valid_projects_details <- valid_projects %>%
-  separate(slug, into = c("slug_end", "name"), sep = "\\s", extra = "merge") %>%
+valid_projects <- projects %>%
+  separate(project_details, into = c("project_id", "slug_end", "name"), sep = "\\s", extra = "merge") %>%
   mutate(url = paste0("zooniverse.org/projects/", slug_end))
-valid_projects_details
+valid_projects
 
 # Save the project list
-saveRDS(valid_projects_details, file = here("input_data", "project_details.rds"))
+saveRDS(valid_projects, file = here("input_data", "project_details.rds"))
 
 #***************************************
 # Merge into one data set
