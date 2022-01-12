@@ -10,15 +10,15 @@ Use Docker and Docker Compose to install dependencies, alternatively use your R 
 
 2. Run `docker-compose up` to serve the recommender API on localhost
 
-Alternatively run `docker-compose run --rm --service-ports recommender-api bash` to start a bash shell in a recommender-api container.
+Alternatively run `docker-compose run --rm --service-ports --entrypoint bash recommender-api` to start a bash shell in a recommender-api container.
 
 ## Usage
 
 ### To prepare the data for the recommender engine
 
-Run the R script
+Run the R script to generate the model datafiles
 
-1. Get a bash console for using R scripts `docker-compose run --rm --service-ports recommender-api bash`
+1. Get a bash console for using R scripts `docker-compose run --rm --service-ports --entrypoint bash recommender-api`
 2. Run the code to generate the model inputs `./R/binary_rating_analysis.R`
 
 - This sources the R script "./R/load_prep_data.R" which reads in three datasets and formats them for analyses:
