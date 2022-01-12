@@ -15,17 +15,18 @@ cors <- function(res) {
 #* Return recommendations for a specified user
 #* @param user_id The user_id for which to predict project recommendations
 #* @get /recommend
-function(user_id) {
+function(user_id, page_size=5) {
 
   # User_id needs to be character type
   user_id <- as.character(user_id)
+  page_size <- as.character(page_size)
 
   # get the user data to predict for
   newdat <- preference_matrix[
     preference_matrix@data@itemsetInfo$itemsetID == user_id,
   ]
 
-  model_predictions <- predict(recomm_model, newdata = newdat, n = 5)
+  model_predictions <- predict(recomm_model, newdata = newdat, n = page_size)
 
   pred_projects <- as.numeric(gsub(
     "P.", "",
