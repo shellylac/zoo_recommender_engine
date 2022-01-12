@@ -4,6 +4,14 @@ library(recommenderlab)
 # Source script to load data and recommender model
 source(here("R", "data_model_prep.R"))
 
+#* @filter cors
+cors <- function(res) {
+  # we could lock this down to only the service origins we expect traffic from
+  # e.g www.zooniverse.org vs * (allow all)
+  res$setHeader("Access-Control-Allow-Origin", "*")
+  plumber::forward()
+}
+
 #* Return recommendations for a specified user
 #* @param user_id The user_id for which to predict project recommendations
 #* @get /recommend
