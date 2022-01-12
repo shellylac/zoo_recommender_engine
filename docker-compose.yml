@@ -5,6 +5,7 @@ services:
     build:
       context: .
     volumes:
+      - ./R:/app/R
       - ./input_data:/app/input_data
     ports:
       - "8000:8000"
